@@ -13,7 +13,9 @@ OpenCode configuration project — defines agents, skills, commands, and runtime
 ```
 opt/opencode/opencode/
 ├── AGENTS.md              # This file — project knowledge base
-├── opencode.json          # Canonical runtime configuration (providers, plugins, MCP, permissions)
+├── config/                # Config directory (opencode.json lives here)
+│   └── opencode.json      # Canonical runtime configuration
+├── opencode.json          # Symlink to config/opencode.json
 ├── package.json           # Dependencies (@opencode-ai/plugin)
 ├── tui.json               # TUI plugin configuration
 ├── .gitignore             # Excludes node_modules, lock files
@@ -52,12 +54,22 @@ opt/opencode/opencode/
 
 | Task | Location | Notes |
 |------|----------|-------|
-| Runtime config | `opencode.json` | Providers, plugins, MCP servers, permissions, fallback models |
+| Runtime config | `config/opencode.json` | Providers, plugins, MCP servers, permissions, fallback models |
 | Agent definitions | `agents/*.md` | YAML frontmatter with description, mode, permissions |
 | Skill definitions | `skills/*/SKILL.md` | YAML frontmatter with name, description, compatibility |
 | Command definitions | `commands/*.md` | YAML frontmatter with description, agent reference |
 | TUI config | `tui.json` | Plugin registration |
 | Dependencies | `package.json` | Single dep: @opencode-ai/plugin |
+
+## CROSS-REFERENCES
+
+| Agent | Commands | Skills | Permissions |
+|-------|----------|--------|-------------|
+| `architect` | — | brainstorming, writing-plans | edit: deny, bash: ask |
+| `deployer` | — | executing-plans, finishing-a-development-branch | railway_*: ask |
+| `researcher` | repo-research, websearch | websearch, webfetch, context7_* | github_*: ask |
+| `reviewer` | review, verify | receiving-code-review, requesting-code-review | github_*: ask |
+| `security` | — | security-review | websearch, webfetch |
 
 ## CONVENTIONS
 
@@ -65,8 +77,27 @@ opt/opencode/opencode/
 - Agent files define `mode: subagent` with granular permission controls (edit: deny, bash: ask, etc.)
 - Skill files always have `compatibility: opencode` and a `name`/`description` pair
 - Command files reference an agent via the `agent:` field
-- Provider credentials use `{env:VAR_NAME}` syntax in opencode.json — never hardcode secrets
+- Provider credentials use `{env:VAR_NAME}` syntax in config/opencode.json — never hardcode secrets
 - All agents reference `openrouter/cohere/north-mini-code:free` as the default model
+- Config files live in `config/` directory; `opencode.json` is a symlink to `config/opencode.json`
+
+## VALIDATION
+
+Run these checks before committing:
+
+```bash
+# Validate opencode.json is valid JSON
+cat config/opencode.json | python3 -m json.tool > /dev/null
+
+# Verify all agent files have required frontmatter
+for f in agents/*.md; do grep -q "^description:" "$f" && grep -q "^mode:" "$f"; done
+
+# Verify all skill files have required frontmatter
+for f in skills/*/SKILL.md; do grep -q "^name:" "$f" && grep -q "^compatibility:" "$f"; done
+
+# Verify all command files have required frontmatter
+for f in commands/*.md; do grep -q "^description:" "$f" && grep -q "^agent:" "$f"; done
+```
 
 ## ANTI-PATTERNS
 
