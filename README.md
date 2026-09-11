@@ -37,6 +37,12 @@ opencode.json       # Main runtime configuration
 
 See `config/opencode.json` for the full runtime configuration. Provider credentials are loaded from environment variables.
 
+Each skill includes a `## Dependencies` section documenting prerequisites.
+
 ## Contributing
 
 See `CONTRIBUTING.md` for guidelines on adding agents, skills, and commands.
+
+## License
+
+This project is part of the OpenCode ecosystem.

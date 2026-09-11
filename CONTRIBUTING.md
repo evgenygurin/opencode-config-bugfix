@@ -39,7 +39,8 @@ skills/             # Skill definitions (one SKILL.md per directory)
    compatibility: opencode
    ---
    ```
-2. Keep the skill focused and actionable
+2. Add a `## Dependencies` section documenting prerequisites
+3. Keep the skill focused and actionable
 
 ## Adding a New Command
 

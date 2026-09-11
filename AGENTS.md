@@ -76,6 +76,7 @@ opt/opencode/opencode/
 - All definition files use YAML frontmatter (`---` delimited) with `description`, `mode`, `permission` or `compatibility` fields
 - Agent files define `mode: subagent` with granular permission controls (edit: deny, bash: ask, etc.)
 - Skill files always have `compatibility: opencode` and a `name`/`description` pair
+- Skill files include a `## Dependencies` section documenting prerequisites
 - Command files reference an agent via the `agent:` field
 - Provider credentials use `{env:VAR_NAME}` syntax in config/opencode.json — never hardcode secrets
 - All agents reference `openrouter/cohere/north-mini-code:free` as the default model
